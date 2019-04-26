@@ -14,6 +14,7 @@ public:
 	float totalCost;
 	float grantsAndScholarships;
 	bool commute;
+	int years;
 
 	string userLoanResponse;
 	bool doesUserHaveLoans;
@@ -46,6 +47,8 @@ public:
 
 	void setNumPrivLoans();
 	int getNumPrivLoans();
+
+	void setTimeFrame();
 
 private:
 
@@ -197,4 +200,10 @@ void userData::setNumPrivLoans() {
 
 int userData::getNumPrivLoans() {
 	return numPrivLoans;
+}
+
+//Gets input asking how long the user would like to take to pay off their loans
+void userData::setTimeFrame() {
+	cout << "Enter the number of years after graduation that you want all of your debt to be payed off: ";
+	cin >> years;
 }
