@@ -16,6 +16,9 @@ public:
 
 	void setPrivateInterest();
 	float getPrivateInterest();
+
+	void privateLoanTotal();
+
 };
 
 void privateLoans::setPrivateLoans() {
@@ -38,4 +41,5 @@ void privateLoans::setPrivateInterest() {
 float privateLoans::getPrivateInterest() {
 	return privateInterest;
 }
+
 

@@ -15,7 +15,7 @@ public:
 	float getGovernmentLoans();
 
 private: 
-	const float GOVERNMENT_INTEREST = 0.0505;
+	
 };
 
 void governmentLoans::setGovernmentLoans() {
@@ -28,3 +28,5 @@ void governmentLoans::setGovernmentLoans() {
 float governmentLoans::getGovernmentLoans() {
 	return governmentLoan;
 }
+
+
