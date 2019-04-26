@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int semesters = 8;
+int semesters = 9;
 int n = 2; // Every new object will increment n by 1
 int const K = 5;
 privateLoans pLoans[K] = {};
