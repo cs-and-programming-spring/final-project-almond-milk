@@ -14,6 +14,7 @@ public:
 	float totalCost;
 	float grantsAndScholarships;
 	bool commute;
+	float housingCost;
 	int years;
 
 	string userLoanResponse;
@@ -38,6 +39,9 @@ public:
 	void setCost();
 	float getCost();
 
+	bool getCommute();
+	float getHousingCost();
+
 	void setGrantsAndScholarships();
 	float getGrantsAndScholarships();
 
@@ -49,6 +53,7 @@ public:
 	int getNumPrivLoans();
 
 	void setTimeFrame();
+	int getTimeFrame();
 
 private:
 
@@ -81,7 +86,7 @@ void userData::setMajor() {
 	cout << "8. Nursing" << endl;
 	cout << "9. Elementary Education" << endl;
 	cout << "10. Criminal Justice" << endl;
-	cout << "0. My major is not listed (An average of all graduate salaries will be used)" << endl;
+	cout << "0. My major is not listed (An average of all salaries will be used)" << endl;
 
 	cin >> major;
 }
@@ -155,6 +160,14 @@ void userData::setCost() {
 	totalCost = tuitionCost + housingCost;
 }
 
+bool userData::getCommute() {
+	return commute;
+}
+
+float userData::getHousingCost() {
+	return housingCost;
+}
+
 float userData::getCost() {
 	return totalCost;
 }
@@ -206,4 +219,8 @@ int userData::getNumPrivLoans() {
 void userData::setTimeFrame() {
 	cout << "Enter the number of years after graduation that you want all of your debt to be payed off: ";
 	cin >> years;
+}
+
+int userData::getTimeFrame() {
+	return years;
 }
