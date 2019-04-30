@@ -1,11 +1,10 @@
 #pragma once
 
-#include "pch.h"
+
 #include <iostream>
-#include "privateLoans.h"
+#include "loans.h"
 #include "governmentLoans.h"
 #include "userData.h"
-#include "Calculator.h"
 
 
 using namespace std;
@@ -14,147 +13,78 @@ using namespace std;
 class suggestions
 {
 public:
-	suggestions();
-	~suggestions();
 	int choice;
-	int choice2
-
+	int choice2;
+	void question(bool, int, float, int, float, float, int, float, float);
+	void comSuggestion(bool, int, float, int, float, float, int, float, float);
+	void suggestion(bool, int, float, int, float, float, int, float, float);
+	float salaries[11] = { 50400, 65900, 50000, 74200, 67000, 33500, 39000, 53400, 66640, 37800, 54000 };
+	int averageExpenses = 3914;
 private:
-	void question();
-	void comSuggestion();
-	void suggestion();
-	void decision();
-	void commuterChoice();
-	void communityCollege();
-	void majorChange();
-	void paymentExtension();
+	
+};
 
+void suggestions::question(bool commute, int numSemesters, float housingCost, int major, float totalCost, float percentage, int years, float privTot, float govTot) {
+	cout << "Would you like suggestions on how to reduce your monthly payments?" << endl;
+	cout << "Enter '1' for yes and '2' to exit the program" << endl;
+	cin >> choice;
 
+	//Commuting/not commuting, attending community college for 2 years, 'see percentage of my income if I switch majors', extend loan payment time 
 
-	void question() {
-		cout << "Would you like suggestions on how to reduce your monthly payments?" << endl;
-		cout << "Enter '1' for yes and '2' for no" << endl;
-		cin >> choice;
-
-		//Commuting/ not commuting, attending community college for 2 years, 'see percentage of my income if I switch majors', extend loan payment time 
-
-		if (choice == 1) {
-			if (commute == true) {
-				comSuggestion();
-			}
+	if (choice == 1) {
+		if (commute == true) {
+			comSuggestion(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 		}
 		else {
-			suggestion();
+			suggestion(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 		}
-
-		else if (choice == 2) {
+	}
+	else if (choice == 2) {
 		cout << "Good luck paying your loans lol";
-		}
-		else {
+		exit(0);
+	}
+	else {
 		cout << "Please input either '1' or '2'";
-		question();
-		}
-
+		question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 	}
 
+}
 
-	void comSuggestion() {
-		cout << "How would you like to reduce your monthly payments?" << endl;
-		cout << "1. Commute to eliminate the cost of room and board" << endl;
-		cout << "2. Attend a community college for 2 years" << endl;
-		cout << "3. Switch majors to raise your monthly income" << endl;
-		cout << "4. Extend the payment time of your loan" << endl;
 
+
+void suggestions::comSuggestion(bool commute, int numSemesters, float housingCost, int major, float totalCost, float percentage, int years, float privTot, float govTot) {
+	cout << endl;
+	cout << "How would you like to reduce your monthly payments?" << endl;
+	cout << "1. Attend a community college for 2 years" << endl;
+	cout << "2. Switch majors to raise your monthly income" << endl;
+	cout << "3. Extend the payment time of your loan" << endl;
+
+	cin >> choice2;
+
+	if ((choice2 <= 0) || (choice2 >= 4)) {
+		cout << "Please enter a valid option";
 		cin >> choice2;
-
-		if (choice2 !> 0 || choice2 !< 5) {
-			cout << "Please enter a valid option";
-			cin >> choice2;
-		}
-
-		decision();
 	}
-
-
-	void suggestion() {
-		cout << "How would you like to reduce your monthly payments?" << endl;
-		cout << "1. Attend a community college for 2 years";
-		cout << "2. Switch majors to raise your monthly income";
-		cout << "3. Extend the payment time of your loan";
-
-		cin >> choice2;
-
-		if (choice2 !> 0 || choice2 !< 4) {
-			cout << "Please enter a valid option";
-			cin >> choice2;
-		}
-
-		choice2 = choice2 + 1;
-		decision();
-	}
-
-
-	void decision() {
-		if (choice2 == 1) {
-			commuterChoice();
-		}
-		else if (choice2 == 2) {
-			communityCollege();
-		}
-		else if (choice2 == 3) {
-			majorChange();
-		}
-		else {
-			paymentExtension();
-		}
-	}
-
-
-	void commuterChoice() {
-		int commuteTime;
-		float semesterRatio;
-		float priceRatio;
-		float newPercentage;
-		float extraMoney;
-
-		cout << "How many semesters do you think you would commute for?" << endl;
-		cin >> commuteTime;
-
-		semesterRatio = commuteTime / user1.getNumSemesters;
-		priceRatio = housingCost / totalCost;
-
-		newPercentage = percentage - (percentage * priceRatio * semesterRatio);
-
-		extraMoney = salaries[major] * ((newPercentage - percentage) / 100);
-
-
-		cout << "Commuting for " << commuteTime << " would make your loan payments " << newPercentage << "% of your monthly income";
-		cout << " rather than " << percentage << "% of your monthly income." << endl;
-
-		cout << "This would leave you with " << extraMoney << " more dollars per month than before." << endl;
-
-		question();
-	}
-
-
-	void communityCollege() {
+	else if (choice2 == 1) {
 		float communityTuition = (4834 * 2);
-		float communityPercentage
+				
+		float sems = numSemesters - 4.0;
+		float ratio = sems / numSemesters;
+		
+		float communityMonthly;
 
-			communityPercentage = (percentage / 2) + (((communityTuition / (years * 12)) / (salaries[major] / 12)) * 100);
+		communityMonthly = (communityTuition + (totalCost * ratio)) / (years * 12);
+	
+		cout << "Your monthly loan payments if you go to community college will be $" << communityMonthly << endl;
 
-		cout << "Your loan payemnts will now make up " << communityPercentage << "% of your monthly income."
+		question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 
-			question();
 	}
-
-
-	void majorChange() {
+	else if (choice2 == 2) {
 		float newRemainder;
-		float privAmount;
-		float govAmount;
-		float newMonthlyPayment;
+		int newMajor;
 
+		cout << endl;
 		cout << "Enter the number of the major you would like to change to: " << endl;
 		cout << "1. Computer Science" << endl;
 		cout << "2. Business" << endl;
@@ -166,43 +96,116 @@ private:
 		cout << "8. Nursing" << endl;
 		cout << "9. Elementary Education" << endl;
 		cout << "10. Criminal Justice" << endl;
-		cout << "0. My major is not listed (An average of all graduate salaries will be used)" << endl;
+		cout << "0. My major is not listed (An average of all salaries will be used)" << endl;
 
 		cin >> newMajor;
 
-		privAmount = monthlyPrivCalculator(years);
-		govAmount = monthlyGovCalculator(years);
-		newMonthlyPayment = privAmount + govAmount;
+		newRemainder = (salaries[newMajor] / 12) - (privTot + govTot) - averageExpenses;
+		float remainingMonthly = (salaries[major] / 12) - (privTot + govTot) - averageExpenses;
 
-		newRemainder = (salaries[newMajor] / 12) - newMonthlyPayment - averageExpenses;
+		cout << "Changing your major will not lower your payments," << endl; 
+		cout << "but it will change your leftover money at the end of each month to $" << (newRemainder - remainingMonthly) << endl << endl;
 
-		cout << "Changing your major will leave you with $" << newRemainder << " left over at the end of each month.";
-
-		question();
+		question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 	}
-
-
-	void paymentExtension() {
+	else {
 		float newYears;
-		float privAmount;
-		float govAmount;
 		float newMonthlyPayment;
-		float newRemainder;
 
 		cout << "How many years would you like to extend your payment plan to?" << endl;
 		cin >> newYears;
 
-		privAmount = monthlyPrivCalculator(newYears);
-		govAmount = monthlyGovCalculator(newYears);
 
-		newMonthlyPayment = privAmount + govAmount;
+		newMonthlyPayment = (totalCost) / (newYears * 12);
 
-		newRemainder = (salaries[major] / 12) - newMonthlyPayment - averageExpenses;
+			cout << "Your new monthly payment for loans will be $" << newMonthlyPayment << "." << endl;
 
-		cout << "Your new monthly payment for loans will be $" << newMonthlyPayment << "." << endl;
-		cout << "This will leave you with $" << newRemainder << "left over at the end of each month." << endl;
-
-		question();
+		question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 	}
+}
 
-};
+	void suggestions::suggestion(bool commute, int numSemesters, float housingCost, int major, float totalCost, float percentage, int years, float privTot, float govTot) {
+		cout << "How would you like to reduce your monthly payments?" << endl;
+		cout << "1. Commute" << endl;
+		cout << "2. Attend a community college for 2 years" << endl;
+		cout << "3. Switch majors to raise your monthly income" << endl;
+		cout << "4. Extend the payment time of your loan" << endl;
+
+		cin >> choice2;
+
+		if (choice2 <= 0 || choice2 > 4) {
+			cout << "Please enter a valid option";
+			cin >> choice2;
+		}
+
+		if (choice2 == 1) {
+			float commuteTime;
+			
+
+			cout << "How many semesters do you think you would commute for?" << endl;
+			cin >> commuteTime;
+
+			float monthlyPay = ((privTot + govTot) - (commuteTime * housingCost) )/ (years * 12); 
+			
+			cout << endl << "Commuting for " << commuteTime << " semesters would make your monthly loan payments $" << monthlyPay << endl;
+
+			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
+		}
+		else if (choice2 == 2) {
+			float communityTuition = (4834 * 2);
+			
+			float sems = numSemesters - 4.0;
+			float ratio = sems / numSemesters;
+			float communityMonthly;
+
+			communityMonthly = (communityTuition + (totalCost * ratio)) / (years * 12);
+			
+			cout << "Your monthly loan payments if you go to community college will be $" << communityMonthly << endl;
+
+			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
+		}
+		else if (choice2 == 3) {
+			float newRemainder;
+			int newMajor;
+
+			cout << "Enter the number of the major you would like to change to: " << endl;
+			cout << "1. Computer Science" << endl;
+			cout << "2. Business" << endl;
+			cout << "3. Engineering" << endl;
+			cout << "4. Biology" << endl;
+			cout << "5. Psychology" << endl;
+			cout << "6. Political Science" << endl;
+			cout << "7. Marketing" << endl;
+			cout << "8. Nursing" << endl;
+			cout << "9. Elementary Education" << endl;
+			cout << "10. Criminal Justice" << endl;
+			cout << "0. My major is not listed (An average of all salaries will be used)" << endl;
+
+			cin >> newMajor;
+
+			float totalMon = (privTot + govTot) / (years * 12);
+			newRemainder = (salaries[newMajor] / 12) - totalMon - averageExpenses;
+			float remainingMonthly = (salaries[major] / 12) - totalMon - averageExpenses;
+
+			cout << "Changing your major will not lower your payments," << endl;
+			cout << "but it will change your leftover money at the end of each month to $" << (newRemainder - remainingMonthly) << endl << endl;
+
+			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
+		}
+		else {
+			float newYears;
+			float newMonthlyPayment;
+
+
+			cout << "How many years would you like to extend your payment plan to?" << endl;
+			cin >> newYears;
+
+			newMonthlyPayment = (totalCost) / (newYears * 12);
+		
+			cout << "Your new monthly payment for loans will be $" << newMonthlyPayment << "." << endl;
+
+			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
+		}
+		choice2 = choice2 + 1;
+		
+	}

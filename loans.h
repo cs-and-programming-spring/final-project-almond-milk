@@ -17,7 +17,6 @@ public:
 	void setPrivateInterest();
 	float getPrivateInterest();
 
-	void privateLoanTotal();
 
 };
 

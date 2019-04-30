@@ -8,34 +8,32 @@
 #include "userData.h"
 #include "governmentLoans.h"
 #include "loans.h"
+#include "suggestions.h"
 
 using namespace std;
 //variables 
-float privateTotal[23] = {};
+float privateTotal;
 
 //functions
-void privateLoanTotal(int, vector <privateLoans>, int);
-void governmentLoanTotal(float);
+//void privateLoanTotal(int, vector <privateLoans>, int);
+float governmentLoanTotal(float, int);
+float monthlyPrivCalculator(int, float);
+float monthlyGovCalculator(int, float);
+float monthlyPercentage(float, int, float);
+float remainingMoney(int, int, float, float, int);
 
-void monthlyPrivCalculator(int);
-float monthlyGovCalculator(int);
-float monthlyPercentage(float);
-float remainingMoney();
-
+//salaries of top 10 starting salaries by major and average of all majors starting salary if choice differs
+float salaries[11] = { 50400, 65900, 50000, 74200, 67000, 33500, 39000, 53400, 66640, 37800, 54000 };
 
 int main() {
 	//variables
 	float govLoan;
-	float totalPrivMonthlyPayment = 0;
+	float totalPrivMonthlyPayment;
 	float percentOfSalary;
-	int years;
 	int averageExpenses = 3914;
 	float totalDebt;
-	float governmentPrice;
 
-	//salaries of top 10 starting salaries by major and average of all majors starting salary if choice differs
-	float salaries[11] = { 50400, 65900, 50000, 74200, 67000, 33500, 39000, 53400, 66640, 37800, 54000 };
-
+	
 	//create user
 	userData user1;
 
@@ -47,6 +45,7 @@ int main() {
 
 	//set major
 	user1.setMajor();
+	int userMajor = user1.getMajor();
 	cout << endl;
 
 	//set current collegiate status
@@ -60,12 +59,18 @@ int main() {
 	//set collegiate costs
 	user1.setCost();
 
+	bool commute = user1.getCommute();
+	float housingCosts = 0;
+	housingCosts = user1.getHousingCost();
+
 	//set grants or scholarships
 	user1.setGrantsAndScholarships();
 	cout << endl;
 
 	//Obtain loan information
-
+	cout << "*************************************************************************************************************" << endl;
+	cout << "Almost ready to provide you clarity on your loans! We just need a little information about your current loans!" << endl;
+	cout << "*************************************************************************************************************" << endl << endl;
 	//Number of government loans
 	user1.setNumGovLoans();
 
@@ -90,110 +95,91 @@ int main() {
 
 	vector<privateLoans> pLoans(numPrivLoans);
 
-	for (int i = 0; i <= numPrivLoans; i++) {
+	for (int i = 0; i < numPrivLoans; i++) {
 		pLoans[i].setPrivateLoans();
 		pLoans[i].setPrivateInterest();
 	}
-
-
+	
 	//run calculations
-	int semesters = user1.getNumSemesters();
 
-	for (int j = 0; j <= numPrivLoans; j++) {
+	int numSemesters = user1.getNumSemesters();
+
+	for (int j = 0; j < numPrivLoans; j++) {
 		float tempValMoney = pLoans[j].getPrivateLoans();
 		float tempValInterest = pLoans[j].getPrivateInterest();
-		float inputtedVal = tempValMoney * ((pow((1 + tempValInterest), semesters) - 1) / tempValInterest);
+
+		float inputtedVal = (tempValMoney* 2) * (((pow((1 + tempValInterest), (numSemesters/2))) - 1) / (tempValInterest));
 		privateTotal = privateTotal + inputtedVal;
 	}
-	//privateLoanTotal(numPrivLoans, pLoans, semesters);			//total cost of private loans after graduation
-	governmentLoanTotal(govLoan);					//total cost of government loans after graduation
+	
+	float governmentPrice = governmentLoanTotal(govLoan, numSemesters);		//total cost of government loans after graduation
 
-	//Tell the user how much their debt will be at the end of college
-
-	for (int z = 0; z <= numPrivLoans; z++) {
-		totalDebt = totalDebt + privateTotal[z];
-	}
-	totalDebt = totalDebt + governmentPrice;
-
+	//Determine total debt
+	totalDebt = privateTotal + governmentPrice;
+	
 	cout << "At the end of college your total debt will be: $" << totalDebt << "." << endl;
 
 	//Determine the amount of time the user wants to have their debt paid off
 	user1.setTimeFrame();
 
+	int yearsTilPaid = user1.getTimeFrame();
+
 	//run monthly payment caculations based on the users desired time frame
-	monthlyPrivCalculator(years);
-	float monthlyGov = monthlyGovCalculator(years);
-	percentOfSalary = monthlyPercentage(monthlyGov);
-	float remainingMonthlyAmount = remainingMoney();
+	totalPrivMonthlyPayment = monthlyPrivCalculator(yearsTilPaid, privateTotal);
+	float monthlyGov = monthlyGovCalculator(yearsTilPaid, governmentPrice);
+	percentOfSalary = monthlyPercentage(monthlyGov, userMajor, totalPrivMonthlyPayment);
+	float remainingMonthlyAmount = remainingMoney(userMajor, averageExpenses, totalPrivMonthlyPayment, monthlyGov, yearsTilPaid);
 
 	//Display Information to the user
-	cout << "Your total monthly loan repayment in order to pay off your loans in " << years << "years is: $" << (monthlyGov + totalPrivMonthlyPayment) << "." << endl;
-	cout << "Based on your major, this will take up " << percentOfSalary << "% of your monthly after-tax salary." << endl;
-	cout << "Based on the national average expenses, this will leave you with $" << remainingMonthlyAmount << " each month." << endl << endl;
+	
+	cout << endl;
+	cout << "***********************************************************************************************************************" << endl;
+	cout << "Your total monthly loan repayment in order to pay off your loans in " << yearsTilPaid << " years is: $" << (monthlyGov + totalPrivMonthlyPayment) << "." << endl <<endl;
+	cout << "Based on your major, this will take up " << percentOfSalary << "% of your monthly after-tax salary." << endl << endl;
+	cout << "Based on the national average expenses, this will leave you with $" << remainingMonthlyAmount << " each month." << endl;
+	cout << "***********************************************************************************************************************" << endl;
 
-	cout << "If you feel this number is higher than you're comfortable with we have some suggestions to help you out!";
-	cout << "Enter the number that corresponds to one of the options below options and we will show you a recalculated loan payment!" << endl;
-	cout << "1) ";
+	suggestions suggestion1;
+
+	suggestion1.question(commute, numSemesters, housingCosts, userMajor, totalDebt, percentOfSalary, yearsTilPaid, privateTotal, governmentPrice);
 
 }
 
 
 //Functions
 
-
-//Calculates the value of each private loan at the time of graduation
-/*
-
-void privateLoans::privateLoanTotal(int K, vector<privateLoans> privL, int sems) {
-	for (int i = 0; i <= K; i++) {
-		float pInterest = privL[i].getPrivateInterest;
-		float pLoanAmount = privL[i].getPrivateLoans;
-
-
-		privateTotal[i] = 
-	}
-}
-*/
-
 //Calculates the value of each government loan at the time of graduation
-void governmentLoanTotal(float gLoanAmount) {
+float governmentLoanTotal(float gLoanAmount, int sems) {
+	float governmentPrice = gLoanAmount * sems;
 
-	const float GOV_INTEREST = 0.0505;
-	governmentPrice = gLoanAmount * ((pow(1 + GOV_INTEREST, semesters) - 1) / GOV_INTEREST);
-
+	return governmentPrice;
 }
 
 //Calculates the required monthly payment to pay off a private loan in a given amount of years (converted to months)
-void monthlyPrivCalculator(int yrs) {
-	for (int i = 0; i < K; i++) {
-		float privInterest = pLoans[i].getPrivateInterest;
-		yrs = yrs * 12;
+float monthlyPrivCalculator(int yrs, float totalPrivPrice) {
+	int months = yrs * 12;
 
-		privMonthlyPayment[i] = privatePrice[i] * ((privInterest * pow(1 + privInterest, yrs)) / ((pow(1 + privInterest, yrs)) - 1));
+	float monthlyPayment = totalPrivPrice / months;
 
-		for (int j = 0; j < K; j++) {
-			totalPrivMonthlyPayment += privMonthlyPayment[j];
-		}
-
-	}
+	return monthlyPayment;
+	
 }
 
 //Calculates the required monthly payment to pay off a government loan in a given amount of years (converted to months)
-float monthlyGovCalculator(int yrs) {
-	const float govInterest = 0.0505;
-	yrs = yrs * 12;
+float monthlyGovCalculator(int yrs, float governmentPrice) {
+	const float GOV_INTEREST = 0.0505;
 
-	float govMonthlyPayment = governmentPrice * ((govInterest * pow(1 + govInterest, yrs)) / ((pow(1 + govInterest, yrs)) - 1));
-
+	float govMonthlyPayment = governmentPrice * ((GOV_INTEREST * pow(1 + GOV_INTEREST, yrs)) / ((pow(1 + GOV_INTEREST, yrs)) - 1));
+	
+	govMonthlyPayment = govMonthlyPayment / 12;
 	return govMonthlyPayment;
 }
 
 
 //Calculates the percentage of the person's monthly salary that loan payments will make up
-float monthlyPercentage(float mGov) {
-	int i = user1.getMajor;
-
-	percentage = (mGov + totalPrivMonthlyPayment) / (salaries[i] / 12);
+float monthlyPercentage(float mGov, int major, float totalPrivMonthlyPayment) {
+	
+	float percentage = (mGov + totalPrivMonthlyPayment) / (salaries[major] / 12);
 	percentage = percentage * 100;
 
 	return percentage;
@@ -201,14 +187,10 @@ float monthlyPercentage(float mGov) {
 
 
 //Calcuates how much money the user will have left over based on their monthly salary, their monthly loan payments, and average cost of living
-float remainingMoney() {
+float remainingMoney(int major, int averageExpenses, float monthlyPriv, float monthlyGov, int yrs) {
 	float remainder;
-	int i = user1.getMajor;
-
-	remainder = ((salaries[i] / 12) * (1 - percentage)) - averageExpenses;
+		
+	remainder = (salaries[major] / 12) - monthlyPriv - monthlyGov - averageExpenses;
 
 	return remainder;
 }
-
-
-
