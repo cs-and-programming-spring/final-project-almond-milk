@@ -106,7 +106,8 @@ int main() {
 	for (int j = 0; j < numPrivLoans; j++) {
 		float tempValMoney = pLoans[j].getPrivateLoans();
 		float tempValInterest = pLoans[j].getPrivateInterest();
-		float inputtedVal = tempValMoney * ((pow((1 + tempValInterest), numSemesters) - 1) / tempValInterest);
+
+		float inputtedVal = (tempValMoney* 2) * (((pow((1 + tempValInterest), (numSemesters/2))) - 1) / (tempValInterest));
 		privateTotal = privateTotal + inputtedVal;
 	}
 	
@@ -148,9 +149,7 @@ int main() {
 
 //Calculates the value of each government loan at the time of graduation
 float governmentLoanTotal(float gLoanAmount, int sems) {
-
-	const float GOV_INTEREST = 0.0505;
-	float governmentPrice = gLoanAmount * ((pow(1 + GOV_INTEREST, sems) - 1) / GOV_INTEREST);
+	float governmentPrice = gLoanAmount * sems;
 
 	return governmentPrice;
 }
