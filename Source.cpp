@@ -20,7 +20,7 @@ float governmentLoanTotal(float, int);
 float monthlyPrivCalculator(int, float);
 float monthlyGovCalculator(int, float);
 float monthlyPercentage(float, int, float);
-float remainingMoney(int, float, int);
+float remainingMoney(int, int, float, float, int);
 
 //salaries of top 10 starting salaries by major and average of all majors starting salary if choice differs
 float salaries[11] = { 50400, 65900, 50000, 74200, 67000, 33500, 39000, 53400, 66640, 37800, 54000 };
@@ -60,7 +60,8 @@ int main() {
 	user1.setCost();
 
 	bool commute = user1.getCommute();
-	float housingCosts = user1.getHousingCost();
+	float housingCosts = 0;
+	housingCosts = user1.getHousingCost();
 
 	//set grants or scholarships
 	user1.setGrantsAndScholarships();
@@ -113,7 +114,7 @@ int main() {
 	
 	float governmentPrice = governmentLoanTotal(govLoan, numSemesters);		//total cost of government loans after graduation
 
-	//
+	//Determine total debt
 	totalDebt = privateTotal + governmentPrice;
 	
 	cout << "At the end of college your total debt will be: $" << totalDebt << "." << endl;
@@ -127,7 +128,7 @@ int main() {
 	totalPrivMonthlyPayment = monthlyPrivCalculator(yearsTilPaid, privateTotal);
 	float monthlyGov = monthlyGovCalculator(yearsTilPaid, governmentPrice);
 	percentOfSalary = monthlyPercentage(monthlyGov, userMajor, totalPrivMonthlyPayment);
-	float remainingMonthlyAmount = remainingMoney(userMajor, percentOfSalary, averageExpenses);
+	float remainingMonthlyAmount = remainingMoney(userMajor, averageExpenses, totalPrivMonthlyPayment, monthlyGov, yearsTilPaid);
 
 	//Display Information to the user
 	
@@ -167,10 +168,10 @@ float monthlyPrivCalculator(int yrs, float totalPrivPrice) {
 //Calculates the required monthly payment to pay off a government loan in a given amount of years (converted to months)
 float monthlyGovCalculator(int yrs, float governmentPrice) {
 	const float GOV_INTEREST = 0.0505;
-	yrs = yrs * 12;
 
 	float govMonthlyPayment = governmentPrice * ((GOV_INTEREST * pow(1 + GOV_INTEREST, yrs)) / ((pow(1 + GOV_INTEREST, yrs)) - 1));
-
+	
+	govMonthlyPayment = govMonthlyPayment / 12;
 	return govMonthlyPayment;
 }
 
@@ -186,9 +187,10 @@ float monthlyPercentage(float mGov, int major, float totalPrivMonthlyPayment) {
 
 
 //Calcuates how much money the user will have left over based on their monthly salary, their monthly loan payments, and average cost of living
-float remainingMoney(int major, float percentage, int averageExpenses) {
+float remainingMoney(int major, int averageExpenses, float monthlyPriv, float monthlyGov, int yrs) {
 	float remainder;
-	remainder = ((salaries[major] / 12) * (1 - (percentage / 100))) - averageExpenses;
+		
+	remainder = (salaries[major] / 12) - monthlyPriv - monthlyGov - averageExpenses;
 
 	return remainder;
 }

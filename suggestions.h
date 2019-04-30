@@ -10,8 +10,6 @@
 using namespace std;
 
 
-
-
 class suggestions
 {
 public:
@@ -22,7 +20,6 @@ public:
 	void suggestion(bool, int, float, int, float, float, int, float, float);
 	float salaries[11] = { 50400, 65900, 50000, 74200, 67000, 33500, 39000, 53400, 66640, 37800, 54000 };
 	int averageExpenses = 3914;
-
 private:
 	
 };
@@ -70,14 +67,14 @@ void suggestions::comSuggestion(bool commute, int numSemesters, float housingCos
 	}
 	else if (choice2 == 1) {
 		float communityTuition = (4834 * 2);
-		//float communityPercentage;
-		int sems = numSemesters - 4;
-
+				
+		float sems = numSemesters - 4.0;
+		float ratio = sems / numSemesters;
+		
 		float communityMonthly;
 
-		communityMonthly = communityTuition / (years * 12) + (((privTot + govTot) / 12) * (sems / numSemesters));
-		//communityPercentage = (percentage / 2) + (((communityTuition / (years * 12)) / (salaries[major] / 12)) * 100);
-
+		communityMonthly = (communityTuition + (totalCost * ratio)) / (years * 12);
+	
 		cout << "Your monthly loan payments if you go to community college will be $" << communityMonthly << endl;
 
 		question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
@@ -119,7 +116,7 @@ void suggestions::comSuggestion(bool commute, int numSemesters, float housingCos
 		cin >> newYears;
 
 
-		newMonthlyPayment = (privTot + govTot) / (newYears * 12);
+		newMonthlyPayment = (totalCost) / (newYears * 12);
 
 			cout << "Your new monthly payment for loans will be $" << newMonthlyPayment << "." << endl;
 
@@ -136,40 +133,33 @@ void suggestions::comSuggestion(bool commute, int numSemesters, float housingCos
 
 		cin >> choice2;
 
-		if (choice2 <= 0 || choice2 >= 4) {
+		if (choice2 <= 0 || choice2 > 4) {
 			cout << "Please enter a valid option";
 			cin >> choice2;
 		}
 
 		if (choice2 == 1) {
 			float commuteTime;
-			float semesterRatio;
-			float priceRatio;
-			float newPercentage;
+			
 
 			cout << "How many semesters do you think you would commute for?" << endl;
 			cin >> commuteTime;
 
-			semesterRatio = commuteTime / numSemesters;
-			priceRatio = housingCost / totalCost;
-
-			newPercentage = percentage - (percentage * priceRatio * semesterRatio);
-
-			cout << "Commuting for " << commuteTime << " would make your loan payments " << newPercentage << "% of your monthly income" << endl;
-			cout << " rather than " << percentage << "% of your monthly income." << endl;
+			float monthlyPay = ((privTot + govTot) - (commuteTime * housingCost) )/ (years * 12); 
+			
+			cout << endl << "Commuting for " << commuteTime << " semesters would make your monthly loan payments $" << monthlyPay << endl;
 
 			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
 		}
 		else if (choice2 == 2) {
 			float communityTuition = (4834 * 2);
-			//float communityPercentage;
-			int sems = numSemesters - 4;
-
+			
+			float sems = numSemesters - 4.0;
+			float ratio = sems / numSemesters;
 			float communityMonthly;
 
-			communityMonthly = communityTuition / (years * 12) + (((privTot + govTot) / 12) * (sems / numSemesters));
-			//communityPercentage = (percentage / 2) + (((communityTuition / (years * 12)) / (salaries[major] / 12)) * 100);
-
+			communityMonthly = (communityTuition + (totalCost * ratio)) / (years * 12);
+			
 			cout << "Your monthly loan payments if you go to community college will be $" << communityMonthly << endl;
 
 			question(commute, numSemesters, housingCost, major, totalCost, percentage, years, privTot, govTot);
@@ -193,8 +183,9 @@ void suggestions::comSuggestion(bool commute, int numSemesters, float housingCos
 
 			cin >> newMajor;
 
-			newRemainder = (salaries[newMajor] / 12) - (privTot + govTot) - averageExpenses;
-			float remainingMonthly = (salaries[major] / 12) - (privTot + govTot) - averageExpenses;
+			float totalMon = (privTot + govTot) / (years * 12);
+			newRemainder = (salaries[newMajor] / 12) - totalMon - averageExpenses;
+			float remainingMonthly = (salaries[major] / 12) - totalMon - averageExpenses;
 
 			cout << "Changing your major will not lower your payments," << endl;
 			cout << "but it will change your leftover money at the end of each month to $" << (newRemainder - remainingMonthly) << endl << endl;
@@ -209,7 +200,7 @@ void suggestions::comSuggestion(bool commute, int numSemesters, float housingCos
 			cout << "How many years would you like to extend your payment plan to?" << endl;
 			cin >> newYears;
 
-			newMonthlyPayment = (privTot + govTot) / (newYears * 12);
+			newMonthlyPayment = (totalCost) / (newYears * 12);
 		
 			cout << "Your new monthly payment for loans will be $" << newMonthlyPayment << "." << endl;
 

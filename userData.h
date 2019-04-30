@@ -134,8 +134,7 @@ void userData::setCost() {
 	int commuteAnswer;
 	
 	float tuitionCost;
-	float housingCost;
-
+	
 	cout << "Are you: 1)paying for on/off campus housing or 2) commuting? Enter 1 or 2: " << endl;
 	cin >> commuteAnswer;
 	cout << endl;
@@ -149,7 +148,6 @@ void userData::setCost() {
 	}
 	else if (commuteAnswer == 2) {
 		commute = 1;
-		housingCost = 0;
 	}
 	
 	cout << "Enter the cost for tuition at your school per semester: " << endl;
